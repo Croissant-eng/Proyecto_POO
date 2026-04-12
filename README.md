@@ -3,10 +3,14 @@
 
 <img width="225" height="225" alt="Ibero Leon" src="https://github.com/user-attachments/assets/e109469f-c3b2-4660-8e53-a9d49e16608d" />
 
-**Nombre de los integrantes:** Sergio Uriel Bustamante Bustos / [Nombre Completo de Vanessa]
-**Matriculas de los integrantes:** 196262-8 / [Matricula de Vanessa]
-**Nombre del Docente:** Edgar Fabian Arenas Ramirez
-**Fecha de entrega:** Finales del mes de abril 2026
+**Nombre de los integrantes:** 
+Sergio Uriel Bustamante Bustos / [Nombre Completo de Vanessa]
+
+**Nombre del Docente:** 
+Edgar Fabian Arenas Ramirez
+
+**Fecha de entrega:** 
+Finales del mes de abril 2026
 
 **Desarrollo Descriptivo Del Proyecto:**
 
