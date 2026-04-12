@@ -3,10 +3,17 @@
 
 <img width="225" height="225" alt="Ibero Leon" src="https://github.com/user-attachments/assets/e109469f-c3b2-4660-8e53-a9d49e16608d" />
 
-**Nombre de los integrantes:** Sergio Uriel Bustamante Bustos / [Nombre Completo de Vanessa]
-**Matriculas de los integrantes:** 196262-8 / [Matricula de Vanessa]
-**Nombre del Docente:** Edgar Fabian Arenas Ramirez
-**Fecha de entrega:** Finales del mes de abril 2026
+**Nombre de los integrantes:** 
+Sergio Uriel Bustamante Bustos / [Nombre Completo de Vanessa]
+
+**Matriculas de los integrantes:** 
+196262-8 / [Matricula de Vanessa]
+
+**Nombre del Docente:** 
+Edgar Fabian Arenas Ramirez
+
+**Fecha de entrega:** 
+Finales del mes de abril 2026
 
 **Desarrollo Descriptivo Del Proyecto:**
 
@@ -31,11 +38,11 @@ polimorfismo para crear un sistema robusto y escalable.
 ### Clases:
 
 ```
-Tarea: Clase base con atributos de estado, prioridad y fechas límite (Encapsulamiento).
-TareaSimple / TareaRecurrente: Especialización de tareas mediante Herencia.
-Proyecto: Agrupa tareas relacionadas y gestiona métricas de avance (Composición).
-Usuario / Notificacion: Manejo de preferencias y eventos de vencimiento próximos.
-GestorTareas: El controlador principal. Filtra tareas por estado/prioridad y detecta de forma automatica los pendientes criticos o vencidos
+**Tarea:** Clase base con atributos de estado, prioridad y fechas límite (Encapsulamiento).
+**TareaSimple / TareaRecurrente:** Especialización de tareas mediante Herencia.
+**Proyecto:** Agrupa tareas relacionadas y gestiona métricas de avance (Composición).
+**Usuario / Notificacion:** Manejo de preferencias y eventos de vencimiento próximos.
+GestorTareas:** El controlador principal. Filtra tareas por estado/prioridad y detecta de forma automatica los pendientes criticos o vencidos
 ```
 
 ## Colaboracion Y Git
