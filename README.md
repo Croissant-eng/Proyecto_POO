@@ -3,10 +3,10 @@
 
 <img width="225" height="225" alt="Ibero Leon" src="https://github.com/user-attachments/assets/e109469f-c3b2-4660-8e53-a9d49e16608d" />
 
-Nombre de los integrantes: Sergio Uriel Bustamante Bustos/ [Nombre Completo de Vanessa]
-Matriculas de los integrantes: 196262-8/ [Matricula de Vanessa]
-Nombre del Docente: Edgar Fabian Arenas Ramirez
-Fecha de entrega: Finales del mes de abril 2026
+**Nombre de los integrantes:** Sergio Uriel Bustamante Bustos / [Nombre Completo de Vanessa]
+**Matriculas de los integrantes:** 196262-8 / [Matricula de Vanessa]
+**Nombre del Docente:** Edgar Fabian Arenas Ramirez
+**Fecha de entrega:** Finales del mes de abril 2026
 
 **Desarrollo Descriptivo Del Proyecto:**
 
@@ -39,10 +39,9 @@ GestorTareas: El controlador principal. Filtra tareas por estado/prioridad y det
 ```
 
 ## Colaboracion Y Git
+<img width="300" height="168" alt="Git_y_Github" src="https://github.com/user-attachments/assets/0f8cb8a9-361c-4a70-adbb-3b14a2f2f31a" />
 
 ```
-<img width="300" height="168" alt="Git_y_Github" src="https://github.com/user-attachments/assets/769bcace-2f66-4f77-8dec-6a3e0803c4ba" />
-
 Implementaremos un flujo de trabajo profesional utilizando un repositorio en GitHub.
 A través de esta herramienta, gestionaremos el control de versiones,
 permitiéndonos trabajar de forma simultánea, resolver conflictos y mantener
