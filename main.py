@@ -1,1 +1,1 @@
-print('Hello World') #Todavia no comenzamos el codigo
+print('Hello World') #Emepzamos a darle estructura al codigo
