@@ -34,16 +34,17 @@ class Frecuencia(Enum):
     Semanal = 7
     Mensual = 30
 
-# Calse base Tarea
+# Mother Class Tarea
 class Tarea:
     def __init__(self, titulo: str, descripcion: str, 
                  fecha_lim: dt, prioridad: Prioridad):
         self.titulo = titulo
         self.descripcion = descripcion
+        self.fecha_creacion = dt.now()     # Nos da la fecha acutal en formato año-mes-dia
         self.fecha_lim = fecha_lim
         self._prioridad = prioridad
         self._estado = Estado.PENDIENTE    # En la creacion del objeto ya se inicializa su estado
-        self.fecha_creacion = dt.now()     # Nos da la fecha acutal en formato año-mes-dia
+        
     
     @property
     def estado(self):
@@ -68,7 +69,7 @@ class Tarea:
         """Counts how many days the homework/task has left"""
         hoy = dt.now()
         delta = self.fecha_lim - hoy
-        return delta.days             # Devuelve un numero entero
+        return delta.days             # Returns an integer refering to the days left
     
     def esta_vencida(self):
         """
@@ -91,7 +92,7 @@ class TareaSimple(Tarea):
 
     def __init__(self, titulo : str, descripcion : str, 
                  prioridad : Prioridad, fecha_lim : dt):
-        super.__init(titulo, descripcion, prioridad, fecha_lim)
+        super().__init(titulo, descripcion, prioridad, fecha_lim)
     
     def completar(self):
         super().completar()
@@ -103,8 +104,9 @@ class TareaRecurrente(Tarea):
     def __init__(self, titulo: str, descripcion: str,
                  prioridad: Prioridad, fecha_lim: dt,
                  frecuencia : Frecuencia):
-        super.__init__(titulo, descripcion, prioridad, fecha_lim)
+        super().__init__(titulo, descripcion, prioridad, fecha_lim)
         self.frecuencia = frecuencia
+        self.ultima_completada = None
     
     def completar(self):
         """
@@ -117,4 +119,53 @@ class TareaRecurrente(Tarea):
         super().completar()
         self.ultima_completada = dt.now()
         self.fecha_lim = self.fecha_lim + timedelta(days=self.frecuencia.value)
-        self.estado = Estado.PENDIENTE
+        print(f'Se ha completado {self.titulo}. Proxima fecha de realizacion {self.fecha_lim}')
+        self._estado = Estado.PENDIENTE # We Restart estado to PENDIENTE again
+    
+    def fecha_ultima_completada(self):
+        """Print´s the last realization of the
+          homework/task and returns the date"""
+        if self.ultima_completada is None:
+            print(f'Todavia no hay una realizacion de la tarea anterior')
+        else:
+            print(f'Ultima realizacion de {self.titulo} el {self.ultima_completada}')
+            return self.ultima_completada
+
+class Proyecto:
+
+
+    def __init__(self, nombre : str, descripcion : str, fecha_lim : dt):
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.tareas= []
+        self.fecha_creacion = dt.now()
+        self.fecha_lim = fecha_lim
+    
+    def agregar_Tarea(self, tarea : Tarea):
+        """Add a homework/task of any type to the proyect"""
+        self.tareas.append(tarea)
+    
+    def eliminar_tarea(self, tarea : Tarea):
+        """Elimina una tarea específica del proyecto"""
+        if tarea in self.tareas:
+            self.tareas.remove(tarea)
+            print(f"Tarea '{tarea.titulo}' eliminada de {self.nombre}")
+        else:
+            print("La tarea no está en este proyecto")
+    
+    def porcentaje_avance(self):
+        if not self.tareas:
+            return 0.0
+        else:
+            completadas = sum(1 for t in self.tareas if t._estado == Estado.COMPLETADA)
+            return ((completadas/len(self.tareas)) * 100)
+    
+    def tareas_pendientes(self):
+        tareas_p = []
+        for t in self.tareas:
+            if t._estado != Estado.COMPLETADA:
+                tareas_p.append(t)
+        return tareas_p
+    
+    def __repr__(self):
+        return f"Proyecto: {self.nombre} \n({len(self.tareas)} tareas \n{self.porcentaje_avance():.1f}% completo)"
