@@ -92,7 +92,7 @@ class TareaSimple(Tarea):
 
     def __init__(self, titulo : str, descripcion : str, 
                  prioridad : Prioridad, fecha_lim : dt):
-        super().__init(titulo, descripcion, prioridad, fecha_lim)
+        super().__init__(titulo, descripcion, prioridad, fecha_lim)
     
     def completar(self):
         super().completar()
@@ -101,10 +101,10 @@ class TareaSimple(Tarea):
 class TareaRecurrente(Tarea):
 
 
-    def __init__(self, titulo: str, descripcion: str,
+    def __init__(self, titulo: str, descripcion: str, 
                  prioridad: Prioridad, fecha_lim: dt,
                  frecuencia : Frecuencia):
-        super().__init__(titulo, descripcion, prioridad, fecha_lim)
+        super().__init__(titulo, descripcion, fecha_lim, prioridad)
         self.frecuencia = frecuencia
         self.ultima_completada = None
     
@@ -167,5 +167,10 @@ class Proyecto:
                 tareas_p.append(t)
         return tareas_p
     
+    def mostrar_tareas(self):
+        print(self.tareas)
+
     def __repr__(self):
         return f"Proyecto: {self.nombre} \n({len(self.tareas)} tareas \n{self.porcentaje_avance():.1f}% completo)"
+
+#class Notificacion:
