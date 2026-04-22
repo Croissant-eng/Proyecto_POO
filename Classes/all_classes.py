@@ -173,4 +173,31 @@ class Proyecto:
     def __repr__(self):
         return f"Proyecto: {self.nombre} \n({len(self.tareas)} tareas \n{self.porcentaje_avance():.1f}% completo)"
 
-#class Notificacion:
+class Usuario:
+
+
+    def __init__(self, nombre : str):
+        self.nombre = nombre
+        self.proyectos = []
+        self.preferencias_notificacion = {
+            'TareasVencidas' : True,
+            'TareasProximas' : True, 
+            'Recordatorios' : True
+            }
+    
+    def agregar_Proyecto(self, proyecto : Proyecto):
+        """Añade un proyecto a la lista del usuario"""
+        self.proyectos.append(proyecto)
+    
+    def todasLasTareas(self):
+        """Retorna todas las tareas de todos los proyectos"""
+        t = []
+        for proyecto in self.proyectos:
+            for tarea in proyecto.tareas:
+                t.append(tarea)
+        return t
+    
+    def notificar(self, tipo : str, msj : str):
+        """Genera una notificación (simulada)"""
+        print(f'Tipo de notificacion: {tipo}')
+        print(f'Mensaje: {msj}')
