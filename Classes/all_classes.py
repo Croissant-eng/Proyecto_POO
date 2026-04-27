@@ -36,6 +36,8 @@ class Frecuencia(Enum):
 
 # Mother Class Tarea
 class Tarea:
+
+
     def __init__(self, titulo: str, descripcion: str, 
                  fecha_lim: dt, prioridad: Prioridad):
         self.titulo = titulo
@@ -44,8 +46,8 @@ class Tarea:
         self.fecha_lim = fecha_lim
         self._prioridad = prioridad
         self._estado = Estado.PENDIENTE    # En la creacion del objeto ya se inicializa su estado
-        
     
+
     @property
     def estado(self):
         return self._estado
@@ -137,7 +139,7 @@ class Proyecto:
     def __init__(self, nombre : str, descripcion : str, fecha_lim : dt):
         self.nombre = nombre
         self.descripcion = descripcion
-        self.tareas= []
+        self.tareas : list[Tarea] = []
         self.fecha_creacion = dt.now()
         self.fecha_lim = fecha_lim
     
@@ -173,6 +175,26 @@ class Proyecto:
     def __repr__(self):
         return f"Proyecto: {self.nombre} \n({len(self.tareas)} tareas \n{self.porcentaje_avance():.1f}% completo)"
 
+class Notificacion:
+
+
+    def __init__(self, tipo : str, mensaje : str):
+        self.tipo = tipo
+        self.mensaje = mensaje
+        self.fecha_envio = dt.now()
+        self.leida = False
+    
+    
+    def marcar_leido(self):
+        self.leida = True
+    
+    def __str__(self):
+        estado = 'Leida' if self.leida else 'No leida'
+        cadena = f'Tipo:[{self.tipo}]:\n{self.mensaje}\n\n'
+        cadena += f'--- {self.fecha_envio} | {self.leida.strftime('%Y-%m-%d %H:%M')} ---'
+        return cadena
+
+
 class Usuario:
 
 
@@ -201,3 +223,9 @@ class Usuario:
         """Genera una notificación (simulada)"""
         print(f'Tipo de notificacion: {tipo}')
         print(f'Mensaje: {msj}')
+
+class GestorTareas:
+
+
+    def __init__(self):
+        pass
