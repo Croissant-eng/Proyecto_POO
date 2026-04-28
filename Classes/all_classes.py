@@ -228,4 +228,30 @@ class GestorTareas:
 
 
     def __init__(self):
+        self.usuarios = []
+    
+    def registrarUsuario(self, usuario : Usuario):
+        self.usuarios.append(usuario)
+
+    def _todas_las_tareas(self) -> list[Tarea]:
+        todas = []
+        for usuario in self.usuarios:
+            todas.extend(usuario.todasLasTareas())
+        return todas
+
+    def filtrar_por_estado(self, estado : Estado) -> list[Tarea]:
+        return [t for t in self._todas_las_tareas() if t._estado == estado]
+    
+    def filtrar_por_prioridad(self, prioridad : Prioridad) -> list[Tarea]:
+        return [t for t in self._todas_las_tareas() if t._prioridad == prioridad]
+    
+    def tareas_proximas_a_vencer(self, dias : int = 3) -> list[Tarea]:
+        hoy = dt.now()
+        limite = hoy + timedelta(days=dias)
+        return [
+            t for t in self._todas_las_tareas
+            if t.fecha_lim <= limite and t._estado != Estado.COMPLETADA
+        ]
+    
+    def generar_notificaciones(self, usuario : Usuario):
         pass
