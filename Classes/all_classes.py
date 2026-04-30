@@ -254,4 +254,22 @@ class GestorTareas:
         ]
     
     def generar_notificaciones(self, usuario : Usuario):
-        pass
+        # Verificar preferencias
+        if usuario.preferencias_notificacion['tareas_vencidas']:
+            for tarea in usuario.todas_las_tareas():
+                if tarea.esta_vencida():
+                    notificacion = Notificacion(
+                        tipo="VENCIDA",
+                        mensaje=f"La tarea '{tarea.titulo}' está vencida"
+                    )
+                    usuario.agregar_notificacion(notificacion)
+        
+         # Verificar tareas próximas a vencer
+        if usuario.preferencias_notificacion['tareas_proximas']:
+            for tarea in usuario.todas_las_tareas():
+                if 0 < tarea.dias_restantes() <= 3:  # Tareas que vencen en 3 días
+                    notificacion = Notificacion(
+                        tipo="PRÓXIMA",
+                        mensaje=f"La tarea '{tarea.titulo}' vence en {tarea.dias_restantes()} días"
+                    )
+                    usuario.agregar_notificacion(notificacion)
