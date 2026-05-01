@@ -25,6 +25,7 @@ class Prioridad(Enum):
     """
 
 class Estado(Enum):
+    VENCIDA = 'vencida'
     PENDIENTE = 'pendiente'
     EN_PROGRESO = "en_progreso"
     COMPLETADA = 'completada'
@@ -40,6 +41,8 @@ class Tarea:
 
     def __init__(self, titulo: str, descripcion: str, 
                  fecha_lim: dt, prioridad: Prioridad):
+        if fecha_lim is None:
+            raise ValueError("La fecha límite no puede ser None")
         self.titulo = titulo
         self.descripcion = descripcion
         self.fecha_creacion = dt.now()     # Nos da la fecha acutal en formato año-mes-dia
@@ -92,9 +95,9 @@ class Tarea:
 class TareaSimple(Tarea):
     
 
-    def __init__(self, titulo : str, descripcion : str, 
-                 prioridad : Prioridad, fecha_lim : dt):
-        super().__init__(titulo, descripcion, prioridad, fecha_lim)
+    def __init__(self, titulo: str, descripcion: str, 
+                fecha_lim: dt, prioridad: Prioridad):
+        super().__init__(titulo, descripcion, fecha_lim, prioridad)
     
     def completar(self):
         super().completar()
@@ -104,8 +107,8 @@ class TareaRecurrente(Tarea):
 
 
     def __init__(self, titulo: str, descripcion: str, 
-                 prioridad: Prioridad, fecha_lim: dt,
-                 frecuencia : Frecuencia):
+                fecha_lim: dt, prioridad: Prioridad,
+                frecuencia: Frecuencia):
         super().__init__(titulo, descripcion, fecha_lim, prioridad)
         self.frecuencia = frecuencia
         self.ultima_completada = None
@@ -191,38 +194,41 @@ class Notificacion:
     def __str__(self):
         estado = 'Leida' if self.leida else 'No leida'
         cadena = f'Tipo:[{self.tipo}]:\n{self.mensaje}\n\n'
-        cadena += f'--- {self.fecha_envio} | {self.leida.strftime('%Y-%m-%d %H:%M')} ---'
+        cadena += f'--- {self.fecha_envio.strftime('%Y-%m-%d %H:%M')} | {estado} ---'
         return cadena
 
 
 class Usuario:
 
 
-    def __init__(self, nombre : str):
+    def __init__(self, nombre: str):
         self.nombre = nombre
         self.proyectos = []
+        self.notificaciones = []
         self.preferencias_notificacion = {
-            'TareasVencidas' : True,
-            'TareasProximas' : True, 
-            'Recordatorios' : True
-            }
+            'TareasVencidas': True,
+            'TareasProximas': True,
+            'Recordatorios': True
+        }
     
-    def agregar_Proyecto(self, proyecto : Proyecto):
-        """Añade un proyecto a la lista del usuario"""
+    def agregar_proyecto(self, proyecto: Proyecto):
         self.proyectos.append(proyecto)
     
-    def todasLasTareas(self):
-        """Retorna todas las tareas de todos los proyectos"""
-        t = []
+    def todas_las_tareas(self) -> list:
+        todas = []
         for proyecto in self.proyectos:
-            for tarea in proyecto.tareas:
-                t.append(tarea)
-        return t
+            todas.extend(proyecto.tareas)
+        return todas
     
-    def notificar(self, tipo : str, msj : str):
-        """Genera una notificación (simulada)"""
-        print(f'Tipo de notificacion: {tipo}')
-        print(f'Mensaje: {msj}')
+
+    def agregar_notificacion(self, notificacion: Notificacion):
+        """Añade una notificación a la lista del usuario"""
+        self.notificaciones.append(notificacion)
+    
+    
+    def ver_notificaciones(self):
+        for notif in self.notificaciones:
+            print(notif)
 
 class GestorTareas:
 
@@ -236,7 +242,7 @@ class GestorTareas:
     def _todas_las_tareas(self) -> list[Tarea]:
         todas = []
         for usuario in self.usuarios:
-            todas.extend(usuario.todasLasTareas())
+            todas.extend(usuario.todas_las_tareas())
         return todas
 
     def filtrar_por_estado(self, estado : Estado) -> list[Tarea]:
@@ -249,13 +255,21 @@ class GestorTareas:
         hoy = dt.now()
         limite = hoy + timedelta(days=dias)
         return [
-            t for t in self._todas_las_tareas
+            t for t in self._todas_las_tareas()
             if t.fecha_lim <= limite and t._estado != Estado.COMPLETADA
         ]
     
     def generar_notificaciones(self, usuario : Usuario):
+        DEBUG = True
+        if DEBUG:
+            for tarea in usuario.todas_las_tareas():
+                if tarea.fecha_lim is None:
+                    print(f"¡ERROR! Tarea '{tarea.titulo}' tiene fecha_lim = None")
+                    print(f"Usuario: {usuario.nombre}")
+                    print(f"Proyecto: {tarea.proyecto.nombre if hasattr(tarea, 'proyecto') else 'N/A'}")
+                    raise ValueError("Tarea sin fecha límite")
         # Verificar preferencias
-        if usuario.preferencias_notificacion['tareas_vencidas']:
+        if usuario.preferencias_notificacion['TareasVencidas']:
             for tarea in usuario.todas_las_tareas():
                 if tarea.esta_vencida():
                     notificacion = Notificacion(
@@ -265,7 +279,7 @@ class GestorTareas:
                     usuario.agregar_notificacion(notificacion)
         
          # Verificar tareas próximas a vencer
-        if usuario.preferencias_notificacion['tareas_proximas']:
+        if usuario.preferencias_notificacion['TareasProximas']:
             for tarea in usuario.todas_las_tareas():
                 if 0 < tarea.dias_restantes() <= 3:  # Tareas que vencen en 3 días
                     notificacion = Notificacion(
@@ -273,3 +287,25 @@ class GestorTareas:
                         mensaje=f"La tarea '{tarea.titulo}' vence en {tarea.dias_restantes()} días"
                     )
                     usuario.agregar_notificacion(notificacion)
+    
+    def reporte_general(self) -> str:
+        """Genera un reporte resumen del estado del sistema"""
+        # Obtener todas las tareas
+        todas = self._todas_las_tareas()
+
+        # Calcular estadísticas
+        total = len(todas)
+        completadas = len([t for t in todas if t._estado == Estado.COMPLETADA])
+        vencidas = len([t for t in todas if t.esta_vencida()])
+        pendientes = total - completadas     # Incluye vencidas y no vencidas
+
+        proximas = len(self.tareas_proximas_a_vencer(dias=3))
+
+        # Formatear el reporte
+        reporte = "=== GESTOR DE TAREAS ===\n"
+        reporte += f"Total de tareas: {total}\n"
+        reporte += f"Tareas completadas: {completadas}\n"
+        reporte += f"Tareas vencidas: {vencidas}\n"
+        reporte += f"Tareas pendientes: {pendientes}\n"
+        reporte += f"Tareas próximas a vencer (3 días): {proximas}\n"
+        return reporte

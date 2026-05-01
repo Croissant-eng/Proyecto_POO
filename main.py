@@ -1,38 +1,49 @@
-# Ejemplo 1 de ejecucion e interaccion entre clases
-
 from datetime import datetime, timedelta
-from Classes.all_classes import (Tarea, TareaSimple, TareaRecurrente, Proyecto, Prioridad, Frecuencia, Estado)
+from Classes.all_classes import (
+    Tarea, TareaSimple, TareaRecurrente, Proyecto,
+    Usuario, Notificacion, GestorTareas, Prioridad, Frecuencia, Estado
+)
 
-# Creamos Tareas
-tarea_simple = TareaSimple(titulo='Finalizar all_classes.py', 
-                           descripcion='Implementar Clases POO', 
-                           prioridad=Prioridad.ALTA,
-                           fecha_lim=datetime.now() + timedelta(days=2))
+# Inicializamos el sistema
+Gestor = GestorTareas()
 
-tarea_recurrente = TareaRecurrente(titulo='Aprender Python y customtkinter', 
-                                   descripcion='Dedicar 30 min al dia a aprender estas dos', 
-                                   prioridad=Prioridad.MEDIA, 
-                                   fecha_lim=datetime.now(), 
-                                   frecuencia=Frecuencia.Diaria)
+# Creamos un usuario
+usuario1 = Usuario(nombre='Aquiles')
+Gestor.registrarUsuario(usuario=usuario1)
 
-# Crear Proyecto
-proyecto = Proyecto(nombre='Proyecto POO', 
-                    descripcion='Proyecto final de Programacion 2', 
-                    fecha_lim=datetime.now() + timedelta(weeks=2))
+# Creamos un proyecto
+proyecto = Proyecto(nombre='Proyecto1', descripcion='Primer Proyecto', 
+                    fecha_lim=datetime.now() + timedelta(days=30))
+usuario1.agregar_proyecto(proyecto)
 
-# Agregamos Tareas Al Proyecto
-proyecto.agregar_Tarea(tarea_simple)
-proyecto.agregar_Tarea(tarea_recurrente)
+# Creamos tareas
+tareasimple = TareaSimple(titulo='Terminar Proyecto', descripcion='Implementar OOP',
+                          prioridad=Prioridad.MEDIA, fecha_lim=datetime.now() + timedelta(days=4))
 
-# Completamos Tareas
-tarea_simple.completar()
-tarea_recurrente.completar()
+tarearecurrente = TareaRecurrente(titulo='Aprender Python', descripcion='Aprendizaje Constante en python',
+                                  prioridad=Prioridad.MEDIA, fecha_lim=datetime.now() + timedelta(days=3),
+                                  frecuencia=Frecuencia.Semanal)
 
-# Verificar resultados
-print("\n=== Estado del proyecto ===")
-print(proyecto)
-print("\nTareas pendientes:")
-for tarea in proyecto.tareas_pendientes():
-    print(f"- {tarea.titulo} (Estado: {tarea.estado.value})")
+# Agregamos Tareas al Proyecto
+proyecto.agregar_Tarea(tareasimple)
+proyecto.agregar_Tarea(tarearecurrente)
 
-print("\nPorcentaje de avance:", proyecto.porcentaje_avance(), "%")
+# Simulamos el flujo de trabajo
+tareasimple.completar()
+tarearecurrente.completar()
+
+# Generamos notificaciones
+Gestor.generar_notificaciones(usuario1)
+
+# Mostramos resultados
+# 8. Mostrar resultados
+print("\n=== REPORTES DEL SISTEMA ===")
+print(Gestor.reporte_general())
+print("\nNotificaciones del usuario:")
+for notif in usuario1.notificaciones:
+    print(notif)
+print("\nTareas próximas a vencer:")
+for tarea in Gestor.tareas_proximas_a_vencer():
+    print(f"- {tarea.titulo} (Vence: {tarea.fecha_lim.strftime('%Y-%m-%d')})")
+
+# Test final de codigo de clases
