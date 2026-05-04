@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 from datetime import datetime as dt
 
-from Modelo import (
+from Classes.all_classes import (
     GestorTareas,
     Usuario,
     Proyecto,
