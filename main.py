@@ -1,49 +1,48 @@
-from datetime import datetime, timedelta
-from Classes.all_classes import (
-    Tarea, TareaSimple, TareaRecurrente, Proyecto,
-    Usuario, Notificacion, GestorTareas, Prioridad, Frecuencia, Estado
-)
+import sys
+from pathlib import Path
 
-# Inicializamos el sistema
-Gestor = GestorTareas()
 
-# Creamos un usuario
-usuario1 = Usuario(nombre='Aquiles')
-Gestor.registrarUsuario(usuario=usuario1)
+# Asegura que Python pueda encontrar los archivos del proyecto
+BASE_DIR = Path(__file__).resolve().parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
 
-# Creamos un proyecto
-proyecto = Proyecto(nombre='Proyecto1', descripcion='Primer Proyecto', 
-                    fecha_lim=datetime.now() + timedelta(days=30))
-usuario1.agregar_proyecto(proyecto)
 
-# Creamos tareas
-tareasimple = TareaSimple(titulo='Terminar Proyecto', descripcion='Implementar OOP',
-                          prioridad=Prioridad.MEDIA, fecha_lim=datetime.now() + timedelta(days=4))
+# Tu archivo Guiproy.py importa desde "Modelo".
+# Como tu Modelo.py actual busca "Classes.all_classes", hacemos que "Modelo"
+# apunte directamente a all_classes.py para que no marque error de importación.
+try:
+    import Classes.all_classes as Modelo
+    sys.modules["Modelo"] = Modelo
+except Exception as error:
+    print("ERROR: No se pudo cargar all_classes.py")
+    print(f"Detalle: {error}")
+    sys.exit(1)
 
-tarearecurrente = TareaRecurrente(titulo='Aprender Python', descripcion='Aprendizaje Constante en python',
-                                  prioridad=Prioridad.MEDIA, fecha_lim=datetime.now() + timedelta(days=3),
-                                  frecuencia=Frecuencia.Semanal)
 
-# Agregamos Tareas al Proyecto
-proyecto.agregar_Tarea(tareasimple)
-proyecto.agregar_Tarea(tarearecurrente)
+# Importa la ventana principal de la interfaz gráfica
+try:
+    from Guiproy import AppGestorTareas
+except ModuleNotFoundError as error:
+    if "customtkinter" in str(error):
+        print("ERROR: Falta instalar customtkinter.")
+        print("Instálalo con este comando:")
+        print("    pip install customtkinter")
+    else:
+        print("ERROR: No se pudo importar Guiproy.py")
+        print(f"Detalle: {error}")
+    sys.exit(1)
+except Exception as error:
+    print("ERROR: Ocurrió un problema al cargar la interfaz.")
+    print(f"Detalle: {error}")
+    sys.exit(1)
 
-# Simulamos el flujo de trabajo
-tareasimple.completar()
-tarearecurrente.completar()
 
-# Generamos notificaciones
-Gestor.generar_notificaciones(usuario1)
+def main():
+    """Arranca la aplicación."""
+    app = AppGestorTareas()
+    app.mainloop()
 
-# Mostramos resultados
-# 8. Mostrar resultados
-print("\n=== REPORTES DEL SISTEMA ===")
-print(Gestor.reporte_general())
-print("\nNotificaciones del usuario:")
-for notif in usuario1.notificaciones:
-    print(notif)
-print("\nTareas próximas a vencer:")
-for tarea in Gestor.tareas_proximas_a_vencer():
-    print(f"- {tarea.titulo} (Vence: {tarea.fecha_lim.strftime('%Y-%m-%d')})")
 
-# Test final de codigo de clases
+if __name__ == "__main__":
+    main()
