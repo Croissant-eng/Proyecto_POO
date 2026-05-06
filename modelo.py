@@ -131,7 +131,7 @@ class TareaRecurrente(Tarea):
         """Print´s the last realization of the
           homework/task and returns the date"""
         if self.ultima_completada is None:
-            print(f'Todavia no hay una realizacion de la tarea anterior')
+            print('Todavia no hay una realizacion de la tarea anterior')
         else:
             print(f'Ultima realizacion de {self.titulo} el {self.ultima_completada}')
             return self.ultima_completada
