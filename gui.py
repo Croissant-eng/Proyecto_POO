@@ -4,7 +4,6 @@ from tkinter import messagebox
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
 
-
 class App:
     def __init__(self):
         self.app = ctk.CTk()
@@ -133,11 +132,13 @@ class App:
         )
         self.entry_proyecto.pack(fill="x", padx=15, pady=5)
 
-        ctk.CTkButton(
+        # LINEA MODIFICADA: Asignado a self.btn_add_proyecto
+        self.btn_add_proyecto = ctk.CTkButton(
             izquierda,
             text="+ Nuevo Proyecto",
             command=self.agregar_proyecto
-        ).pack(fill="x", padx=15, pady=5)
+        )
+        self.btn_add_proyecto.pack(fill="x", padx=15, pady=5)
 
         self.lista_proyectos = ctk.CTkScrollableFrame(izquierda, fg_color="#F8FAFC")
         self.lista_proyectos.pack(fill="both", expand=True, padx=15, pady=10)
@@ -161,11 +162,13 @@ class App:
         self.combo_prioridad.set("MEDIA")
         self.combo_prioridad.pack(fill="x", padx=15, pady=5)
 
-        ctk.CTkButton(
+        # LINEA MODIFICADA: Asignado a self.btn_add_tarea
+        self.btn_add_tarea = ctk.CTkButton(
             derecha,
             text="+ Agregar Tarea",
             command=self.agregar_tarea
-        ).pack(fill="x", padx=15, pady=5)
+        )
+        self.btn_add_tarea.pack(fill="x", padx=15, pady=5)
 
         self.lista_tareas = ctk.CTkScrollableFrame(derecha, fg_color="#F8FAFC")
         self.lista_tareas.pack(fill="both", expand=True, padx=15, pady=10)
@@ -173,32 +176,30 @@ class App:
         botones = ctk.CTkFrame(derecha, fg_color="transparent")
         botones.pack(fill="x", padx=15, pady=(0, 10))
 
-        ctk.CTkButton(
+        # LINEA MODIFICADA: Asignado a self.btn_completar
+        self.btn_completar = ctk.CTkButton(
             botones,
             text="Completar",
             fg_color="#16A34A",
             command=self.completar_tarea
-        ).pack(side="left", expand=True, fill="x", padx=3)
+        )
+        self.btn_completar.pack(side="left", expand=True, fill="x", padx=3)
 
-        ctk.CTkButton(
+        # LINEA MODIFICADA: Asignado a self.btn_eliminar
+        self.btn_eliminar = ctk.CTkButton(
             botones,
             text="Eliminar",
             fg_color="#EF4444",
             command=self.eliminar_tarea
-        ).pack(side="left", expand=True, fill="x", padx=3)
+        )
+        self.btn_eliminar.pack(side="left", expand=True, fill="x", padx=3)
 
     def agregar_proyecto(self):
         nombre = self.entry_proyecto.get().strip()
-
         if not nombre:
             messagebox.showerror("Error", "Escribe el nombre del proyecto.")
             return
-
-        proyecto = {
-            "nombre": nombre,
-            "tareas": []
-        }
-
+        proyecto = {"nombre": nombre, "tareas": []}
         self.proyectos.append(proyecto)
         self.proyecto_activo = proyecto
         self.entry_proyecto.delete(0, "end")
@@ -208,36 +209,23 @@ class App:
         for proyecto in self.proyectos:
             if proyecto["nombre"] == "Tareas independientes":
                 return proyecto
-
-        proyecto = {
-            "nombre": "Tareas independientes",
-            "tareas": []
-        }
-
+        proyecto = {"nombre": "Tareas independientes", "tareas": []}
         self.proyectos.append(proyecto)
         return proyecto
 
     def agregar_tarea(self):
         titulo = self.entry_tarea.get().strip()
         prioridad = self.combo_prioridad.get()
-
         if not titulo:
             messagebox.showerror("Error", "Escribe el título de la tarea.")
             return
-
-        tarea = {
-            "titulo": titulo,
-            "prioridad": prioridad,
-            "estado": "PENDIENTE"
-        }
-
+        tarea = {"titulo": titulo, "prioridad": prioridad, "estado": "PENDIENTE"}
         if self.proyecto_activo is None:
             proyecto = self.obtener_proyecto_independiente()
             proyecto["tareas"].append(tarea)
             self.proyecto_activo = proyecto
         else:
             self.proyecto_activo["tareas"].append(tarea)
-
         self.entry_tarea.delete(0, "end")
         self.actualizar_todo()
 
@@ -254,7 +242,6 @@ class App:
         if self.tarea_seleccionada is None:
             messagebox.showerror("Error", "Selecciona una tarea.")
             return
-
         self.tarea_seleccionada["estado"] = "COMPLETADA"
         self.actualizar_todo()
 
@@ -262,7 +249,6 @@ class App:
         if self.proyecto_activo is None or self.tarea_seleccionada is None:
             messagebox.showerror("Error", "Selecciona una tarea.")
             return
-
         self.proyecto_activo["tareas"].remove(self.tarea_seleccionada)
         self.tarea_seleccionada = None
         self.actualizar_todo()
@@ -275,10 +261,8 @@ class App:
     def actualizar_proyectos(self):
         for widget in self.lista_proyectos.winfo_children():
             widget.destroy()
-
         for proyecto in self.proyectos:
             color = "#DBEAFE" if proyecto == self.proyecto_activo else "white"
-
             ctk.CTkButton(
                 self.lista_proyectos,
                 text=proyecto["nombre"],
@@ -292,7 +276,6 @@ class App:
     def actualizar_tareas(self):
         for widget in self.lista_tareas.winfo_children():
             widget.destroy()
-
         if self.proyecto_activo is None:
             ctk.CTkLabel(
                 self.lista_tareas,
@@ -300,14 +283,11 @@ class App:
                 text_color="#64748B"
             ).pack(pady=20)
             return
-
         for tarea in self.proyecto_activo["tareas"]:
             texto = f'{tarea["titulo"]} | {tarea["prioridad"]} | {tarea["estado"]}'
             color = "#DCFCE7" if tarea["estado"] == "COMPLETADA" else "white"
-
             if tarea == self.tarea_seleccionada:
                 color = "#EEF2FF"
-
             ctk.CTkButton(
                 self.lista_tareas,
                 text=texto,
@@ -321,10 +301,8 @@ class App:
     def actualizar_resumen(self):
         total_proyectos = len(self.proyectos)
         todas = []
-
         for proyecto in self.proyectos:
             todas += proyecto["tareas"]
-
         total_tareas = len(todas)
         completadas = len([t for t in todas if t["estado"] == "COMPLETADA"])
         pendientes = total_tareas - completadas
