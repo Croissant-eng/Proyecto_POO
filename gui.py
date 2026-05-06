@@ -265,7 +265,7 @@ class App:
             color = "#DBEAFE" if proyecto == self.proyecto_activo else "white"
             ctk.CTkButton(
                 self.lista_proyectos,
-                text=proyecto["nombre"],
+                text=proyecto.nombre,
                 fg_color=color,
                 text_color="#1F2A44",
                 hover_color="#BFDBFE",
@@ -300,11 +300,13 @@ class App:
 
     def actualizar_resumen(self):
         total_proyectos = len(self.proyectos)
+
         todas = []
         for proyecto in self.proyectos:
-            todas += proyecto["tareas"]
+            todas += proyecto.tareas
+
         total_tareas = len(todas)
-        completadas = len([t for t in todas if t["estado"] == "COMPLETADA"])
+        completadas = len([t for t in todas if t.estado.name == "COMPLETADA"])
         pendientes = total_tareas - completadas
 
         self.lbl_proyectos.configure(text=str(total_proyectos))
@@ -314,10 +316,10 @@ class App:
 
         self.lbl_resumen.configure(
             text=f"Resumen rápido\n\n"
-                 f"Proyectos: {total_proyectos}\n"
-                 f"Tareas: {total_tareas}\n"
-                 f"Completadas: {completadas}\n"
-                 f"Pendientes: {pendientes}"
+                f"Proyectos: {total_proyectos}\n"
+                f"Tareas: {total_tareas}\n"
+                f"Completadas: {completadas}\n"
+                f"Pendientes: {pendientes}"
         )
 
     def run(self):
