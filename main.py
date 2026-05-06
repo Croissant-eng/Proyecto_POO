@@ -12,7 +12,7 @@ if str(BASE_DIR) not in sys.path:
 # Como tu Modelo.py actual busca "Classes.all_classes", hacemos que "Modelo"
 # apunte directamente a all_classes.py para que no marque error de importación.
 try:
-    import Classes.all_classes as Modelo
+    import all_classes as Modelo
     sys.modules["Modelo"] = Modelo
 except Exception as error:
     print("ERROR: No se pudo cargar all_classes.py")
