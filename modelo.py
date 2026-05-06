@@ -194,7 +194,7 @@ class Notificacion:
     def __str__(self):
         estado = 'Leida' if self.leida else 'No leida'
         cadena = f'Tipo:[{self.tipo}]:\n{self.mensaje}\n\n'
-        cadena += f'--- {self.fecha_envio.strftime('%Y-%m-%d %H:%M')} | {estado} ---'
+        cadena += f"--- {self.fecha_envio.strftime('%Y-%m-%d %H:%M')} | {estado} ---"
         return cadena
 
 
