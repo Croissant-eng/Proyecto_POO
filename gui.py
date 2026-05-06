@@ -207,7 +207,7 @@ class App:
 
     def obtener_proyecto_independiente(self):
         for proyecto in self.proyectos:
-            if proyecto["nombre"] == "Tareas independientes":
+            if proyecto.nombre == "Tareas independientes":
                 return proyecto
         proyecto = {"nombre": "Tareas independientes", "tareas": []}
         self.proyectos.append(proyecto)
@@ -283,9 +283,9 @@ class App:
                 text_color="#64748B"
             ).pack(pady=20)
             return
-        for tarea in self.proyecto_activo["tareas"]:
-            texto = f'{tarea["titulo"]} | {tarea["prioridad"]} | {tarea["estado"]}'
-            color = "#DCFCE7" if tarea["estado"] == "COMPLETADA" else "white"
+        for tarea in self.proyecto_activo.tareas:
+            texto = f'{tarea.titulo} | {tarea.prioridad.name} | {tarea.estado.name}'
+            color = "#DCFCE7" if tarea.estado.name == "COMPLETADA" else "white"
             if tarea == self.tarea_seleccionada:
                 color = "#EEF2FF"
             ctk.CTkButton(
