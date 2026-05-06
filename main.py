@@ -14,13 +14,11 @@ def iniciar_aplicacion():
     # 2. Instanciamos la Vista (La interfaz gráfica)
     vista_interfaz = App()
     
-    # 3. COMPOSICIÓN: Creamos el Controlador
-    # Aquí es donde ocurre la magia: le pasamos el modelo y la vista al controlador
-    # para que pueda coordinar las acciones del usuario.
+    # 3. Creamos el Controlador
+    # Para que pueda coordinar las acciones del usuario.
     controlador = ControladorTareas(usuario_estudiante, vista_interfaz)
     
     # 4. Ejecución del loop principal
-    # Esto mantiene la ventana abierta y escuchando eventos
     vista_interfaz.run()
 
 if __name__ == "__main__":
